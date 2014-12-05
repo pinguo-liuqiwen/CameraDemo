@@ -2,20 +2,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="3dp">
+    android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/rl_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_select_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F6F6F6"
+            android:text="全选"/>
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
         <GridView
             android:id="@+id/gv_photos"
-            android:columnWidth="70dp"
+            android:columnWidth="100dp"
             android:horizontalSpacing="5dp"
             android:verticalSpacing="10dp"
-            android:numColumns="5"
+            android:numColumns="4"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="3dp"></GridView>
+    </RelativeLayout>
 
-
-        </GridView>
-
+    <LinearLayout
+        android:id="@+id/ll_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#F6F6F6"
+            android:layout_weight="1"
+            android:text="删除"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#cccccc"></View>
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#F6F6F6"
+            android:layout_weight="1"
+            android:text="取消"/>
+    </LinearLayout>
 
 </LinearLayout>

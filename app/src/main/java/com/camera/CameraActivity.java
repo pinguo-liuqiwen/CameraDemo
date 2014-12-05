@@ -2,10 +2,12 @@ package com.camera;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -80,11 +82,11 @@ public class CameraActivity extends Activity implements View.OnTouchListener, Vi
                     isTakePhoto = false;
                     break;
                 case TAKE_PHOTO_SUCCESS :
+                    isTakePhoto = false;
+                    Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
                     String uri = mPhotos.save((byte[]) msg.obj);
                     Bitmap bm = mPhotos.compressionBitmap(uri, 90, 90);
                     mIvPhoto.setImageBitmap(bm);
-                    Toast.makeText(getApplicationContext(), uri, Toast.LENGTH_LONG).show();
-                    isTakePhoto = false;
                     break;
             }
         }
@@ -136,6 +138,7 @@ public class CameraActivity extends Activity implements View.OnTouchListener, Vi
             startPreview();
             isPreview = true;
         }
+        initPopulationPhoto(); //初始化相册入口照片
     }
 
     @Override
@@ -432,6 +435,23 @@ public class CameraActivity extends Activity implements View.OnTouchListener, Vi
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * 初始化相册入口照片
+     */
+    private void initPopulationPhoto() {
+        Cursor cursor = mPhotos.getPhotos();
+        if(cursor.getCount() > 0){
+            cursor.moveToFirst();
+            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            Bitmap bitmap = mPhotos.compressionBitmap(path, 70, 70);
+            mIvPhoto.setImageBitmap(bitmap);
+            cursor.close();
+        }else {
+            mIvPhoto.setImageResource(R.drawable.ic_launcher);
+        }
+
     }
 
 }

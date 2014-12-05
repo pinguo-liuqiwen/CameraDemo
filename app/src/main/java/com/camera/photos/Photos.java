@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 
 
@@ -17,6 +18,7 @@ import com.camera.config.Util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by camera360 on 14-11-19.
@@ -142,7 +144,7 @@ public class Photos {
     }
 
     /**
-     * 得到照片数据
+     * 得到原照片数据
      * @return
      */
     public Cursor getPhotos(){
@@ -151,6 +153,98 @@ public class Photos {
 
 //        return mContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null,
 //                 null, null);
+    }
+
+    /**
+     * 得到缩略图
+     * @param imageId
+     * @return
+     */
+    public Bitmap getThumbnails(String imageId){
+        Cursor cursor = mContext.getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, null,
+                MediaStore.Images.Thumbnails.IMAGE_ID + "=? and " + MediaStore.Images.Thumbnails.WIDTH + "=? ", new String[]{imageId,"50"}, null);
+        if(cursor.getCount() > 0){
+            cursor.moveToNext();
+            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA));
+            cursor.close();
+            return BitmapFactory.decodeFile(path);
+        }
+        return null;
+    }
+
+    /**
+     * 删除照片
+     * @param id
+     */
+    public void delete(String id){
+         mContext.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                 MediaStore.Images.Media.DESCRIPTION + "=? and " + MediaStore.Images.Media._ID + "=?",
+                new String[]{PHOTO_FLAG,id});
+    }
+
+    /**
+     * 删除所有照片
+     */
+    public void deleteAll(){
+        mContext.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                MediaStore.Images.Media.DESCRIPTION + "=?",
+                new String[]{PHOTO_FLAG});
+    }
+
+    /**
+     * 删除照片
+     * @param where
+     */
+    public void deleteByWhere(String where){
+        if(TextUtils.isEmpty(where)){
+            where = " 1=1 ";
+        }
+        mContext.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                MediaStore.Images.Media.DESCRIPTION + "=? and " + where,
+                new String[]{PHOTO_FLAG});
+    }
+
+    /**
+     * 按id删除照片
+     * @param ids
+     */
+    public void deleteByIds(Object[] ids){
+        String str = getIds(ids);
+        if(TextUtils.isEmpty(str)){
+            return;
+        }
+        deleteByWhere(MediaStore.Images.Media._ID + " in (" + str + ")");
+    }
+
+    /**
+     * 删除除id外的照片
+     * @param ids
+     */
+    public void deleteByNoIds(Object[] ids){
+        String str = getIds(ids);
+        if(TextUtils.isEmpty(str)){
+            return;
+        }
+        deleteByWhere(MediaStore.Images.Media._ID + " not in(" + str + ")");
+    }
+
+    /**
+     *
+     * @param ids
+     * @return
+     */
+    private String getIds(Object[] ids){
+        if(ids == null && ids.length == 0){
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        for(int i=0, l=ids.length; i<l; i++){
+            if(i>0){
+                builder.append(",");
+            }
+            builder.append(ids[i]);
+        }
+        return builder.toString();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.camera.config;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
@@ -72,6 +73,20 @@ public class Util {
             file.mkdirs();
         }
         return path;
+    }
+
+    /**
+     *
+     * @param cursor
+     */
+    public static void LogCursorInfo(Cursor cursor){
+        while(cursor.moveToNext()){
+            for(int i=0, l=cursor.getColumnCount(); i<l; i++){
+                System.out.print("     " + cursor.getColumnName(i) + " : " + cursor.getString(i));
+            }
+            System.out.println("=-=-=-=-=-=-=-==-=-=-=-=-=-=-==-=-=-=-=-=-=-==-=-=-=-=-=-=-==-=-=-=-=-=-=-==-=-=-=-=-=-=-=");
+        }
+
     }
 
 

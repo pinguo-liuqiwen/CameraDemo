@@ -6,7 +6,7 @@
     <ImageView
         android:id="@+id/iv_photo"
         android:scaleType="centerCrop"
-        android:layout_width="70dp"
-        android:layout_height="70dp" />
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
 
 </RelativeLayout>
